@@ -6,12 +6,14 @@ class AR1:
 	def __init__(self, d, b0=None, b1=None, sig=None, y0=None):
 
 		self.dim = d  # dimension of state variable Y
-		
-		# Initialize parameters and state if not given
+
 		self.b0 = self._process_args(b0, d, 'b0')
 		self.b1 = self._process_args(b1, d, 'b1')
 		self.sig = self._process_args(sig, d, 'sig')
 		self.y = self._process_args(y0, d, 'y0')
+
+	def __repr__(self):
+		return f"<AR(1) Model: d={self.dim}>"
 
 	def __str__(self):
 		return "AR(1) : Y = {}\n  b0:\n{}\n  b1:\n{}\n  sig: {}".format(
@@ -56,7 +58,7 @@ class AR1:
 		
 		expected = allowed_shapes[argname]
 		
-		x = np.array(x)  # convert input to a numpy array
+		x = np.array(x, dtype=float)  # convert input to a numpy array
 		s = x.shape
 		
 		assert s in expected, f"Shape {s} not allowed for {argname}. Allowed: {expected}."
@@ -85,6 +87,7 @@ def test_ar1():
 	ar1 = AR1(4, b0s, b1s, sigmas, y0s)
 
 	print(ar1)
+	print(repr(ar1))
 	
 	hist = ar1.simulate(n)
 
