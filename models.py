@@ -87,7 +87,6 @@ def test_ar1():
 	ar1 = AR1(4, b0s, b1s, sigmas, y0s)
 
 	print(ar1)
-	print(repr(ar1))
 	
 	hist = ar1.simulate(n)
 
@@ -99,8 +98,8 @@ def test_ar1():
 		sig = sigmas[i]
 
 		ax.plot(range(hist.shape[1]), hist[i,:])
-		ax.set_xlabel(r'$t$')
-		ax.set_ylabel(r'$y_{i}$')
+		ax.set_xlabel(f'$t$')
+		ax.set_ylabel(f'$y_{i}$')
 		ax.set_title(f"$b_0={b0}, b_1={b1}, \\sigma={sig}$")
 
 	plt.tight_layout()
