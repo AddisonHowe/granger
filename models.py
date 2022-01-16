@@ -8,29 +8,10 @@ class AR1:
 		self.dim = d  # dimension of state variable Y
 		
 		# Initialize parameters and state if not given
-		if b0 is None:
-			self.b0 = np.random.uniform(-1, 1, size=[d,d])
-		else:
-			assert b0.shape == (d, d), f"Bad shape for b0. Expected ({d},{d}). Got {b0.shape}"
-			self.b0 = b0
-
-		if b1 is None:
-			self.b1 = np.random.uniform(-1, 1, size=[d,d])
-		else:
-			assert b1.shape == (d, d), f"Bad shape for b1. Expected ({d},{d}). Got {b1.shape}"
-			self.b1 = b1
-
-		if sig is None:
-			self.sig = np.ones(d)
-		else:
-			assert sig.shape == (d,), f"Bad shape for sig. Expected ({d},). Got {sig.shape}"
-			self.sig = sig
-
-		if y0 is None:
-			self.y = np.random.uniform(-1, 1, size=d)
-		else:
-			assert y0.shape == (d,), f"Bad shape for y0. Expected ({d},). Got {y0.shape}"
-			self.y = y0
+		self.b0 = self._process_args(b0, d, 'b0')
+		self.b1 = self._process_args(b1, d, 'b1')
+		self.sig = self._process_args(sig, d, 'sig')
+		self.y = self._process_args(y0, d, 'y0')
 
 	def __str__(self):
 		return "AR(1) : Y = {}\n  b0:\n{}\n  b1:\n{}\n  sig: {}".format(
@@ -58,6 +39,40 @@ class AR1:
 		self.y = self.b0 @ np.ones(self.b0.shape[1]) + self.b1 @ self.y + eps
 		return self.y
 
+	def _process_args(self, x, d, argname):
+		
+		if x is None:
+			if argname in ['b0', 'b1']:
+				return np.random.uniform(-1, 1, size=[d, d])
+			elif argname == 'sig':
+				return np.ones(d)
+			elif argname == 'y0':
+				return np.random.uniform(-1, 1, size=d)
+
+		allowed_shapes = {'b0' : [(), (d,), (d,d)],
+				  		  'b1' : [(), (d,), (d,d)],
+				  		  'sig': [(), (d,)],
+				  		  'y0' : [(), (d,)]}
+		
+		expected = allowed_shapes[argname]
+		
+		x = np.array(x)  # convert input to a numpy array
+		s = x.shape
+		
+		assert s in expected, f"Shape {s} not allowed for {argname}. Allowed: {expected}."
+		
+		if argname in ['b0', 'b1']:  # should be matrices of shape (d,d)
+			if s == ():
+				return x * np.identity(d)
+			elif s == (d,):
+				return np.diag(x)
+		
+		if argname in ['sig', 'y0'] and s == ():  # should be arrays of length (d)
+			return x * np.ones(d, dtype=float)
+		
+		return x
+
+
 
 def test_ar1():
 	n = 100
@@ -65,10 +80,10 @@ def test_ar1():
 	b0s 	= [1.0,  	1.0, 	0.1, 	0.0]
 	b1s 	= [0.8, 	-0.8, 	1.0, 	1.1]
 	sigmas 	= [0.1, 	0.1, 	0.5, 	0.5]
-	
 	y0s 	= [4.7, 	0.7, 	4.0, 	4.0]
 
-	ar1 = AR1(4, np.diag(b0s), np.diag(b1s), np.array(sigmas), np.array(y0s))
+	ar1 = AR1(4, b0s, b1s, sigmas, y0s)
+
 	print(ar1)
 	
 	hist = ar1.simulate(n)
