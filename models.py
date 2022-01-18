@@ -103,7 +103,7 @@ class AR():
 				reduced_std = np.std(reduced_res)
 				F_star = reduced_std*reduced_std/full_std/full_std
 				p = 1-scipy.stats.f.cdf(F_star, len(full_res)-1, len(reduced_res)-1)
-				print("Testing to see if variable {:d} causes variable {:d}:".format(variable_to_fit, variable_to_test), p < alpha)
+				print("Testing to see if variable {:d} causes variable {:d}:".format(variable_to_test, variable_to_fit), p < alpha)
                 
                 
 
