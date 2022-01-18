@@ -4,8 +4,15 @@ import matplotlib.pyplot as plt
 class AR1:
 
 	def __init__(self, d, b0=None, b1=None, sig=None, y0=None):
+		"""
+		d: dimension of state variable Y
+		b0: length d list or array, or d by d matrix; b0 coefficient matrix
+		b1: length d list or array, or d by d matrix; b1 coefficient matrix
+		sig: length d list or array; standard deviations for each state component
+		y0: length d list or array; initial state
+		"""
 
-		self.dim = d  # dimension of state variable Y
+		self.dim = d
 
 		self.b0 = self._process_args(b0, d, 'b0')
 		self.b1 = self._process_args(b1, d, 'b1')
@@ -75,7 +82,6 @@ class AR1:
 		return x
 
 
-
 def test_ar1():
 	n = 100
 
@@ -99,7 +105,7 @@ def test_ar1():
 
 		ax.plot(range(hist.shape[1]), hist[i,:])
 		ax.set_xlabel(f'$t$')
-		ax.set_ylabel(f'$y_{i}$')
+		ax.set_ylabel(f'$y$')
 		ax.set_title(f"$b_0={b0}, b_1={b1}, \\sigma={sig}$")
 
 	plt.tight_layout()
