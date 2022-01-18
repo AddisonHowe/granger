@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 class AR():
 	### INPUTS ###
 	## coeffs: matrix of the coefficients used in the AR model
-	##         if inconsistent number of lagged vals used for certain vars,
+	##         if inconsistent number of lagged vals used for certain variables,
 	##		   just add zeros
 	## num_vars: number of variables used in the multivariate model
 	## N: total number of time steps for generating data
