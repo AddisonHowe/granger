@@ -57,8 +57,15 @@ class AR():
 class AR1:
 
 	def __init__(self, d, b0=None, b1=None, sig=None, y0=None):
+		"""
+		d: dimension of state variable Y
+		b0: constant, length d list or array, or d by d matrix; b0 coefficient matrix
+		b1: constant, length d list or array, or d by d matrix; b1 coefficient matrix
+		sig: constant or length d list or array; standard deviations for each state component
+		y0: constant or length d list or array; initial state
+		"""
 
-		self.dim = d  # dimension of state variable Y
+		self.dim = d
 
 		self.b0 = self._process_args(b0, d, 'b0')
 		self.b1 = self._process_args(b1, d, 'b1')
@@ -75,7 +82,7 @@ class AR1:
 			np.array_str(self.b1, precision=3),
 			self.sig)
 
-	def simulate(self, n):
+	def generate_data(self, n):
 		"""
 		Take n steps. Returns ndarray of shape [d, n+1], the history of the state Y 
 		including initial and final values.
@@ -84,7 +91,7 @@ class AR1:
 		history[:,0] = self.y
 		for i in range(1, n+1):
 			history[:, i] = self.step()
-		return history	
+		return history
 
 	def step(self):
 		"""
@@ -128,7 +135,6 @@ class AR1:
 		return x
 
 
-
 def test_ar1():
 	n = 100
 
@@ -152,7 +158,7 @@ def test_ar1():
 
 		ax.plot(range(hist.shape[1]), hist[i,:])
 		ax.set_xlabel(f'$t$')
-		ax.set_ylabel(f'$y_{i}$')
+		ax.set_ylabel(f'$y$')
 		ax.set_title(f"$b_0={b0}, b_1={b1}, \\sigma={sig}$")
 
 	plt.tight_layout()
