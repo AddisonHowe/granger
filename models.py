@@ -2,28 +2,56 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class AR():
-    def __init__(self,order,num_vars,coeffs,std_devs,init_vals,N):
-        # if order is a constant
-        self.order=order
-        self.num_vars=num_vars
-        self.coeffs = coeffs
-        self.std_devs = std_devs
-        self.init_vals = init_vals
-        self.N = N
+	### INPUTS ###
+	## coeffs: matrix of the coefficients used in the AR model
+	##         if inconsistent number of lagged vals used for certain vars,
+	##		   just add zeros
+	## num_vars: number of variables used in the multivariate model
+	## N: total number of time steps for generating data
+	## std_devs: vector of standard deviations for noise component of each var
+	## init_vals: matrix of initial values, must be consistent with coeff matrix
+	def __init__(self,num_vars,N,coeffs,std_devs,init_vals=None):
+		self.num_vars=num_vars
+		self.N=N
+		self.coeffs=coeffs
+		self.std_devs = std_devs
+		if init_vals is not None:
+			self.init_vals = init_vals
+		else:
+			self.init_vals = np.random.uniform(-1, 1, size=[self.init_vals,self.coeffs.shape[0]//self.init_vals])
+		self._check_consistency()
 
-    #generate the data using the AR models with the specified parameters
-    def generate_data(self):
-        data = np.zeros(num_vars,N)
-        data[:,0] = self.init_vals
-        for t in range(1,N):
-            data_mat = np.zeros(order*)
-            data[t,:] = np.matmul(coeffs,data_mat)
+	### OUTPUT ###
+	## self.data: data generated from AR model with num_vars rows
+	##            and N+init_val.shape[1] columns
+	def generate_data(self):
+		self.data = np.zeros((self.num_vars,self.init_vals.shape[1]+self.N))
+		self.data[0:self.num_vars,0:self.init_vals.shape[1]]=self.init_vals
+		aug_vector = np.zeros(self.num_vars * self.init_vals.shape[1])
+		for n in range(0,self.N):
+			#fill augmented vector with past values
+			for i in range(0,self.num_vars):
+				aug_vector[i*self.init_vals.shape[1]:(i+1)*self.init_vals.shape[1]] = self.data[i,n:n+self.init_vals.shape[1]]
+			self.data[:,n+self.init_vals.shape[1]]=np.matmul(self.coeffs, aug_vector) + np.random.normal(0, self.std_devs, self.num_vars)
+		return self.data
 
-        return data
+	#check that the sizes of the various inputs are consistent
+	def _check_consistency(self):
+		num_vars=self.num_vars
+		coeffs=self.coeffs
+		std_devs=self.std_devs
+		init_vals=self.init_vals
+		# check that number of variables is correct in coeff matrix
+		assert coeffs.shape[0]==num_vars, "Number of rows in coeff =/= num_vars"
 
-    # return mean and std dev of generated data
-    def get_stats(self):
-        pass
+		# check that number of variables is correct in std_devs
+		assert std_devs.shape[0]==num_vars, "Length of std_devs =/= num_vars"
+
+		# check that number of variables is correct in init_vals
+		assert init_vals.shape[0]==num_vars, "Number of rows in init_vals =/= num_vars"
+
+		# check that enough initial values are provided
+		assert init_vals.shape[1]==coeffs.shape[1]//num_vars , "Number of initial values provided not correct"
 
 
 class AR1:
@@ -131,4 +159,4 @@ def test_ar1():
 	plt.show()
 
 
-test_ar1()
+# test_ar1()
