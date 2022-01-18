@@ -8,9 +8,9 @@ std_devs = np.random.uniform(.1,.5,3)
 init_vals = np.random.uniform(-1,1,(3,3))
 N=30
 # create AR model object
-ar = AR(3,N,coeffs,std_devs,init_vals)
+ar = AR(3,coeffs,std_devs,init_vals)
 # generate data using model
-ar.generate_data()
+ar.generate_data(30)
 # plot data
 plt.plot(ar.data[0])
 plt.plot(ar.data[1])

@@ -10,9 +10,8 @@ class AR():
 	## N: total number of time steps for generating data
 	## std_devs: vector of standard deviations for noise component of each var
 	## init_vals: matrix of initial values, must be consistent with coeff matrix
-	def __init__(self,num_vars,N,coeffs,std_devs,init_vals=None):
+	def __init__(self,num_vars,coeffs,std_devs,init_vals=None):
 		self.num_vars=num_vars
-		self.N=N
 		self.coeffs=coeffs
 		self.std_devs = std_devs
 		if init_vals is not None:
@@ -24,11 +23,11 @@ class AR():
 	### OUTPUT ###
 	## self.data: data generated from AR model with num_vars rows
 	##            and N+init_val.shape[1] columns
-	def generate_data(self):
-		self.data = np.zeros((self.num_vars,self.init_vals.shape[1]+self.N))
+	def generate_data(self,N):
+		self.data = np.zeros((self.num_vars,self.init_vals.shape[1]+N))
 		self.data[0:self.num_vars,0:self.init_vals.shape[1]]=self.init_vals
 		aug_vector = np.zeros(self.num_vars * self.init_vals.shape[1])
-		for n in range(0,self.N):
+		for n in range(0,N):
 			#fill augmented vector with past values
 			for i in range(0,self.num_vars):
 				aug_vector[i*self.init_vals.shape[1]:(i+1)*self.init_vals.shape[1]] = self.data[i,n:n+self.init_vals.shape[1]]
