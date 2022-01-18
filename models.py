@@ -94,7 +94,7 @@ def test_ar1():
 
 	print(ar1)
 	
-	hist = ar1.simulate(n)
+	hist = ar1.generate_data(n)
 
 	fig, axes = plt.subplots(2,2)
 	for i in range(4):
@@ -102,11 +102,15 @@ def test_ar1():
 		b0 = b0s[i]
 		b1 = b1s[i]
 		sig = sigmas[i]
+		data = hist[i, :]
 
-		ax.plot(range(hist.shape[1]), hist[i,:])
+		mu = np.mean(data)
+		sd = np.std(data)
+		ax.plot(range(len(data)), data, label=f"data\n$\\mu={mu:.2f}$\n$\\sigma={sd:.2f}$")
 		ax.set_xlabel(f'$t$')
 		ax.set_ylabel(f'$y$')
 		ax.set_title(f"$b_0={b0}, b_1={b1}, \\sigma={sig}$")
+		ax.legend()
 
 	plt.tight_layout()
 	plt.show()
