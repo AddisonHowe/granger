@@ -67,10 +67,11 @@ class AR():
 		#get total number of variables
 		dimension = self.num_vars
 
-		#get a list of all variables except the one you are testing for causality
-		slice_reduced = list(range(dimension)[::-1] )
-		slice_reduced.pop(variable_to_test)
-
+		#get a list of all variables (including lags) except the one you are testing for causality
+		slice_reduced = list(range(dimension*p))
+		for i in range(p):       
+			slice_reduced.pop(variable_to_test+i*p-i)
+		#print(slice_reduced)
 
 		data_in = hist_lag[:,p:].T
 		for i in range(p-1):
