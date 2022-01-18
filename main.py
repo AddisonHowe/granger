@@ -11,6 +11,9 @@ N=30
 ar = AR(3,coeffs,std_devs,init_vals)
 # generate data using model
 ar.generate_data(30)
+order=3
+ar.causality(order)
+
 # plot data
 plt.plot(ar.data[0])
 plt.plot(ar.data[1])
