@@ -6,10 +6,10 @@ class AR1:
 	def __init__(self, d, b0=None, b1=None, sig=None, y0=None):
 		"""
 		d: dimension of state variable Y
-		b0: length d list or array, or d by d matrix; b0 coefficient matrix
-		b1: length d list or array, or d by d matrix; b1 coefficient matrix
-		sig: length d list or array; standard deviations for each state component
-		y0: length d list or array; initial state
+		b0: constant, length d list or array, or d by d matrix; b0 coefficient matrix
+		b1: constant, length d list or array, or d by d matrix; b1 coefficient matrix
+		sig: constant or length d list or array; standard deviations for each state component
+		y0: constant or length d list or array; initial state
 		"""
 
 		self.dim = d
@@ -29,7 +29,7 @@ class AR1:
 			np.array_str(self.b1, precision=3),
 			self.sig)
 
-	def simulate(self, n):
+	def generate_data(self, n):
 		"""
 		Take n steps. Returns ndarray of shape [d, n+1], the history of the state Y 
 		including initial and final values.
@@ -38,7 +38,7 @@ class AR1:
 		history[:,0] = self.y
 		for i in range(1, n+1):
 			history[:, i] = self.step()
-		return history	
+		return history
 
 	def step(self):
 		"""
