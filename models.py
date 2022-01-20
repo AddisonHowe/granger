@@ -29,11 +29,12 @@ class AR():
 	def generate_data(self,N):
 		self.data = np.zeros((self.num_vars,self.init_vals.shape[1]+N))
 		self.data[0:self.num_vars,0:self.init_vals.shape[1]]=self.init_vals
-		aug_vector = np.zeros(self.num_vars * self.init_vals.shape[1])
+		aug_vector = np.zeros(self.num_vars * self.init_vals.shape[1] + 1)
+		aug_vector[0]=1.
 		for n in range(0,N):
 			#fill augmented vector with past values
 			for i in range(0,self.num_vars):
-				aug_vector[i*self.init_vals.shape[1]:(i+1)*self.init_vals.shape[1]] = self.data[i,n:n+self.init_vals.shape[1]]
+				aug_vector[1+i*self.init_vals.shape[1]:1+(i+1)*self.init_vals.shape[1]] = self.data[i,n:n+self.init_vals.shape[1]]
 			self.data[:,n+self.init_vals.shape[1]]=np.matmul(self.coeffs, aug_vector) + np.random.normal(0, self.std_devs, self.num_vars)
 		return self.data
 
