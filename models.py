@@ -74,7 +74,7 @@ class AR():
 		#get a list of all variables (including lags) except the one you are testing for causality
 		slice_reduced = list(range(dimension*p))
 		for i in range(p):       
-			slice_reduced.pop(variable_to_test+i*p-i)
+			slice_reduced.pop(variable_to_test+i*dimension-i)
 		#print(slice_reduced)
 
 		data_in = hist_lag[:,p:].T
@@ -98,18 +98,28 @@ class AR():
 
 		#return residuals
 		return full_residuals, reduced_residuals
-	
-	#tests distribution of residuals to see if their standard deviations are statistically significant
+
 	def causality(self,order, alpha=0.05):
+		print("\\begin{tabular}{cccc}")
+		print("\hline")
+		print(r"Response Variable & Causal Variable & $p$-value & Causality?\\")
+		print("\hline")
 		for variable_to_fit in range(self.num_vars):
 			for variable_to_test in range(self.num_vars):
-				[full_res, reduced_res] = self._generate_residual_dists(variable_to_fit,variable_to_test,order)
-				full_std = np.std(full_res)
-				reduced_std = np.std(reduced_res)
-				F_star = reduced_std*reduced_std/full_std/full_std
-				p = 1-scipy.stats.f.cdf(F_star, len(full_res)-1, len(reduced_res)-1)
-				print("Testing to see if variable {:d} causes variable {:d}:".format(variable_to_test, variable_to_fit), p < alpha, "(p="+str(round(p,8))+")")
-                
+				if variable_to_fit != variable_to_test:
+					[full_res, reduced_res] = self._generate_residual_dists(variable_to_fit,variable_to_test,order)
+					full_std = np.std(full_res)
+					reduced_std = np.std(reduced_res)
+					F_star = reduced_std*reduced_std/full_std/full_std
+					p = 1-scipy.stats.f.cdf(F_star, len(full_res)-1, len(reduced_res)-1)
+					#print("Testing to see if variable {:d} causes variable {:d}:".format(variable_to_test, variable_to_fit), p < alpha)
+					if p < 0.001:
+						p_str = "< 0.001"
+					else:
+						p_str = "{:.3f}".format(p)
+					print("$X_{:d}$ & $X_{:d}$ & ${:s}$ & {:s}{:s}".format(variable_to_fit, variable_to_test, p_str, str(p<alpha), r"\\"))
+		print("\hline")
+		print("\end{tabular}")         
                 
 
 
