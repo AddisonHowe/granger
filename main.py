@@ -2,20 +2,21 @@ from models import AR
 import numpy as np
 import matplotlib.pyplot as plt
 
-# create inputs for 3rd order with 3 variables
-coeffs = np.random.uniform(-.5,.5,(3,9))
-std_devs = np.random.uniform(.1,.5,3)
-init_vals = np.random.uniform(-1,1,(3,3))
-N=30
+# create inputs for 1st order with 3 variables
+# 2nd variable strongly forces 1st variable and 3rd variable weakly forces 1st variable
+coeffs = np.array([[0,100,1],[0,0,0],[0,0,0]])
+print(coeffs.shape)
+std_devs = np.random.uniform(.1,2,3)
+init_vals = np.random.uniform(-1,1,(3,1))
+N=20
 # create AR model object
 ar = AR(3,coeffs,std_devs,init_vals)
 # generate data using model
-ar.generate_data(30)
-order=3
-ar.causality(order)
+ar.generate_data(N)
+order=1
+ar.causality(order,0.05)
 
 # plot data
 plt.plot(ar.data[0])
 plt.plot(ar.data[1])
-plt.plot(ar.data[2])
 plt.show()
