@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class AR():
 	### INPUTS ###
 	## coeffs: matrix of the coefficients used in the AR model
