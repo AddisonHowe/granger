@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 # first column corresponds to the constant terms
 coeffs = np.array([[1,0,100,1],[1,0,0,0],[1,0,0,0]])
 print(coeffs.shape)
-std_devs = np.random.uniform(.1,2,3)
+std_devs = np.random.uniform(.1,.3,3)
 init_vals = np.random.uniform(-1,1,(3,1))
-N=20
+N=10
 # create AR model object
 ar = AR(3,coeffs,std_devs,init_vals)
 # generate data using model

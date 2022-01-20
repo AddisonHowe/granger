@@ -8,7 +8,9 @@ class AR():
 	### INPUTS ###
 	## coeffs: matrix of the coefficients used in the AR model
 	##         if inconsistent number of lagged vals used for certain variables,
-	##		   just add zeros
+	##		   just add zeros. The first entry in each row is the constant term, then
+	##		   are the coefficients of all of the lagged first variables, then the lagged
+	##		   second variables, and so on...
 	## num_vars: number of variables used in the multivariate model
 	## N: total number of time steps for generating data
 	## std_devs: vector of standard deviations for noise component of each var
@@ -106,7 +108,7 @@ class AR():
 				reduced_std = np.std(reduced_res)
 				F_star = reduced_std*reduced_std/full_std/full_std
 				p = 1-scipy.stats.f.cdf(F_star, len(full_res)-1, len(reduced_res)-1)
-				print("Testing to see if variable {:d} causes variable {:d}:".format(variable_to_test, variable_to_fit), p < alpha)
+				print("Testing to see if variable {:d} causes variable {:d}:".format(variable_to_test, variable_to_fit), p < alpha, "(p="+str(round(p,8))+")")
                 
                 
 
