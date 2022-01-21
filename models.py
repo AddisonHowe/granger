@@ -238,4 +238,4 @@ def test_ar1():
 	plt.show()
 
 
-# test_ar1()
+test_ar1()
